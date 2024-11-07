@@ -72,6 +72,9 @@ export const preparePostgresDB = async (
 				return result as any[];
 			};
 			const proxy = async (params: ProxyParams) => {
+				params.sql = params.sql.replace(/a.attidentity AS identity_type/i, 'a.attidentity::text AS identity_type');
+		        params.sql = params.sql.replace(/a.attgenerated AS generated_type/i, 'a.attgenerated::text AS generated_type');
+
 				const prepared = session.prepareQuery<
 					PreparedQueryConfig & {
 						execute: AwsDataApiPgQueryResult<unknown>;
@@ -130,6 +133,9 @@ export const preparePostgresDB = async (
 			};
 
 			const proxy = async (params: ProxyParams) => {
+				params.sql = params.sql.replace(/a.attidentity AS identity_type/i, 'a.attidentity::text AS identity_type');
+		        params.sql = params.sql.replace(/a.attgenerated AS generated_type/i, 'a.attgenerated::text AS generated_type');
+
 				const preparedParams = preparePGliteParams(params.params);
 				const result = await pglite.query(params.sql, preparedParams, {
 					rowMode: params.mode,
@@ -246,6 +252,9 @@ export const preparePostgresDB = async (
 		};
 
 		const proxy = async (params: ProxyParams) => {
+			params.sql = params.sql.replace(/a.attidentity AS identity_type/i, 'a.attidentity::text AS identity_type');
+            params.sql = params.sql.replace(/a.attgenerated AS generated_type/i, 'a.attgenerated::text AS generated_type');
+
 			if (params.mode === 'object') {
 				return await client.unsafe(params.sql, params.params);
 			}
