@@ -117,7 +117,7 @@ function construct<TSchema extends Record<string, unknown> = Record<string, neve
 
 	const session = new AwsDataApiSession(client, dialect, schema, { ...config, logger }, undefined);
 	const db = new AwsDataApiPgDatabase(dialect, session, schema as any);
-	(<any> db).$client = client;
+	(<any>db).$client = client;
 
 	return db as any;
 }
@@ -153,8 +153,10 @@ export function drizzle<
 	$client: TClient;
 } {
 	// eslint-disable-next-line no-instanceof/no-instanceof
-	if (params[0].constructor.name === 'RDSDataClient') {
-		return construct(params[0] as TClient, params[1] as DrizzleAwsDataApiPgConfig<TSchema>) as any;
+	if (params[0].constructor.name !== "Function" && params[0].constructor.name !== "Object") {
+		if (params[0].constructor.name === 'RDSDataClient') {
+			return construct(params[0] as TClient, params[1] as DrizzleAwsDataApiPgConfig<TSchema>) as any;
+		}
 	}
 
 	if ((params[0] as { client?: TClient }).client) {
